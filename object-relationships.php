@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) { exit; }
 /**
  * Plugin Name: Object Relationships
- * Plugin URI: https://tryfile.com
+ * Plugin URI: https://timkaye.org
  * Description: Enables relationships between objects to be stored in a dedicated database table
  * Version: 0.1.0
  * Author: Tim Kaye
