@@ -9,4 +9,6 @@ When successful, `kts_add_object_relationship()` returns the `relationship_id`. 
 
 `kts_get_object_relationship_ids()` takes the first three of the above arguments and enables searching for the matching IDs of a specific object type when both that object type and the related object's ID and object type are known. It returns an array of IDs.
 
+There is a filter, `recognized_relationship_objects`, that makes it possible to modify the list of objects that may be related using this table. There are also action hooks, `added_object_relationship`, `pre_delete_object_relationship`, and `deleted_object_relationship`, whose roles should be self-explanatory.
+
 There are probably many ways in which this plugin can be improved. (The addition of a relationship meta table, with associated helper functions, is an obvious example.) Pull requests are welcome.
