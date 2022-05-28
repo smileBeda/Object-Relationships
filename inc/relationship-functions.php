@@ -12,7 +12,7 @@
 	);
 
 	# Get names of taxonomies and add them to $objects array
-	$taxonomies = 	get_taxonomies();
+	$taxonomies = get_taxonomies();
 	foreach( $taxonomies as $taxonomy ) {
 		$objects[] = $taxonomy;
 	}
