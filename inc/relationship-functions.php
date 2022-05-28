@@ -99,6 +99,7 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 	# Good to go!
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'kts_object_relationships';
+	$relationship_id = 0;
 
 	$relationship_array = array(
 		'left_object_id'		=> $left_object_id,
@@ -111,26 +112,33 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 	$sql1 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
 	# If so, return the relationship ID as an integer
-	if ( ! empty( $sql1 ) ) {
-		$row = $wpdb->get_row( $sql1 );
+	$row = $wpdb->get_row( $sql1 );
+	$relationship_id = (int) $row->relationship_id;
+
+	if ( ! empty( $relationship_id ) ) {
 
 		# Hook when pre-existing relationship found
-		do_action( 'existing_object_relationship', $row->relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+		do_action( 'existing_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
-		return (int) $row->relationship_id;
-	}
+		return $relationship_id;
 
-	# Also query database table right to left
-	$sql2 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE right_object_id = %d AND right_object_type = %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+	} else {
 
-	# If this relationship exists, return the relationship ID as an integer
-	if ( ! empty( $sql2 ) ) {
+		# Also query database table right to left if no match so far
+		$sql2 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE right_object_id = %d AND right_object_type = %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+		# If this relationship exists, return the relationship ID as an integer
 		$row = $wpdb->get_row( $sql2 );
+		$relationship_id = (int) $row->relationship_id;
 
-		# Hook when pre-existing relationship found
-		do_action( 'existing_object_relationship', $row->relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+		if ( ! empty( $relationship_id ) ) {
 
-		return (int) $row->relationship_id;
+			# Hook when pre-existing relationship found
+			do_action( 'existing_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+			return $relationship_id;
+
+		}
 	}
 
 	# Relationship does not exist, so insert it now ($wpdb->insert sanitizes data)
@@ -236,23 +244,19 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 	# $wpdb->query does not sanitize data, so use $wpdb->prepare
 	$deleted1 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
 
-	if ( ! empty( $deleted1 ) ) {
-		$row = $wpdb->get_row( $deleted1 );
-		$relationship_id = (int) $row->relationship_id;
-	}
+	$row = $wpdb->get_row( $deleted1 );
+	$relationship_id = (int) $row->relationship_id;
 
-	if ( $relationship_id === 0 ) { // nothing deleted so far
+	if ( empty( $relationship_id ) ) { // nothing deleted so far
 
 		$deleted2 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE right_object_id = %d AND right_object_type= %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
 
-		if ( ! empty( $deleted2 ) ) {
-			$row = $wpdb->get_row( $deleted2 );
-			$relationship_id = (int) $row->relationship_id;
-		}
+		$row = $wpdb->get_row( $deleted2 );
+		$relationship_id = (int) $row->relationship_id;
 	}
 
 	# Bust object relationship query cache
-	if ( $relationship_id !== 0 ) { // a relationship got deleted
+	if ( ! empty( $relationship_id ) ) { // a relationship got deleted
 		wp_cache_set( 'last_changed', microtime(), 'relationships' );
 
 		# Hook after relationship deleted
