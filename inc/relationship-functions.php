@@ -113,7 +113,9 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 
 	# If so, return the relationship ID as an integer
 	$row = $wpdb->get_row( $sql1 );
-	$relationship_id = (int) $row->relationship_id;
+	if ( is_object( $row ) ) {
+		$relationship_id = (int) $row->relationship_id;
+	}
 
 	if ( ! empty( $relationship_id ) ) {
 
@@ -129,7 +131,9 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 
 		# If this relationship exists, return the relationship ID as an integer
 		$row = $wpdb->get_row( $sql2 );
-		$relationship_id = (int) $row->relationship_id;
+		if ( is_object( $row ) ) {
+			$relationship_id = (int) $row->relationship_id;
+		}
 
 		if ( ! empty( $relationship_id ) ) {
 
@@ -245,14 +249,18 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 	$deleted1 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
 
 	$row = $wpdb->get_row( $deleted1 );
-	$relationship_id = (int) $row->relationship_id;
+	if ( is_object( $row ) ) {
+		$relationship_id = (int) $row->relationship_id;
+	}
 
 	if ( empty( $relationship_id ) ) { // nothing deleted so far
 
 		$deleted2 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE right_object_id = %d AND right_object_type= %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
 
 		$row = $wpdb->get_row( $deleted2 );
-		$relationship_id = (int) $row->relationship_id;
+		if ( is_object( $row ) ) {
+			$relationship_id = (int) $row->relationship_id;
+		}
 	}
 
 	# Bust object relationship query cache
