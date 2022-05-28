@@ -5,7 +5,7 @@ This plugin arose out of a need to overcome a limitation in ClassicPress (and Wo
 
 The current helper functions are as follows: `kts_add_object_relationship()` and `kts_delete_object_relationship()` both take the following four arguments: `$left_object_id, $left_object_type, $right_object_type, $right_object_id`, where `$left_object_id` and `$right_object_id` are both integers and `$left_object_type` and `$right_object_type` are both strings that provide the name of a recognized object type. Since the relationship is bi-directional, it is immaterial which object is treated as "left" and which is treated as "right" in each query.
 
-When successful, `kts_add_object_relationship()` returns the `relationship_id`. It also prevents the insertion of duplicate relationships.
+When successful, or when it detects that a relationship already exists, `kts_add_object_relationship()` returns the `relationship_id`, while also preventing the insertion of duplicate relationships.
 
 `kts_get_object_relationship_ids()` takes the first three of the above arguments and enables searching for the matching IDs of a specific object type when both that object type and the related object's ID and object type are known. It returns an array of IDs.
 
