@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 /* SPECIFY OBJECTS WHOSE RELATIONSHIPS WILL BE STORED IN THIS TABLE */
  function kts_recognized_relationship_objects() {
