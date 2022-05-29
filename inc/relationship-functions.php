@@ -246,20 +246,32 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 	do_action( 'pre_delete_object_relationship', $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
 	# $wpdb->query does not sanitize data, so use $wpdb->prepare
-	$deleted1 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
+	$sql1 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
-	$row = $wpdb->get_row( $deleted1 );
+	# If so, return the relationship ID as an integer
+	$row = $wpdb->get_row( $sql1 );
 	if ( is_object( $row ) ) {
 		$relationship_id = (int) $row->relationship_id;
 	}
 
-	if ( empty( $relationship_id ) ) { // nothing deleted so far
+	if ( ! empty( $relationship_id ) ) {
 
-		$deleted2 = $wpdb->query( $wpdb->prepare( "DELETE FROM $table_name OUTPUT deleted.relationship_id WHERE right_object_id = %d AND right_object_type= %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id ) );
+		$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
 
-		$row = $wpdb->get_row( $deleted2 );
+	}
+	else { // nothing deleted so far
+		
+		$sql2 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE right_object_id = %d AND right_object_type = %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+		$row = $wpdb->get_row( $sql2 );
 		if ( is_object( $row ) ) {
 			$relationship_id = (int) $row->relationship_id;
+		}
+
+		if ( ! empty( $relationship_id ) ) {
+
+			$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
+
 		}
 	}
 
