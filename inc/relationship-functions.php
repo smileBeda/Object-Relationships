@@ -255,9 +255,7 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 	}
 
 	if ( ! empty( $relationship_id ) ) {
-
 		$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
-
 	}
 	else { // nothing deleted so far
 		
@@ -269,9 +267,7 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 		}
 
 		if ( ! empty( $relationship_id ) ) {
-
 			$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
-
 		}
 	}
 
