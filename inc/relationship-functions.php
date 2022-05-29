@@ -384,6 +384,10 @@ function kts_get_object_relationship_ids( $left_object_id, $left_object_type, $r
 
 /* DELETE ALL RELATIONSHIP META WHEN RELATIONSHIP DELETED */
 function kts_delete_relationship_meta_when_relationship_deleted( $relationship_id ) {
-	delete_relationship_meta( $relationship_id );
+	$metas = get_relationship_meta( $relationship_id );
+
+	foreach( $metas as $key => $meta ) {
+		delete_relationship_meta( $relationship_id, $key );
+	}
 }
 add_action( 'deleted_object_relationship', 'kts_delete_relationship_meta_when_relationship_deleted' );
