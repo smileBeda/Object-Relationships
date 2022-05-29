@@ -124,7 +124,9 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 
 		return $relationship_id;
 
-	} else {
+	}
+
+	else {
 
 		# Also query database table right to left if no match so far
 		$sql2 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE right_object_id = %d AND right_object_type = %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
@@ -242,31 +244,40 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 	$table_name = $wpdb->prefix . 'kts_object_relationships';
 	$relationship_id = 0;
 
-	# Hook before relationship deleted
-	do_action( 'pre_delete_object_relationship', $left_object_id, $left_object_type, $right_object_type, $right_object_id );
-
 	# $wpdb->query does not sanitize data, so use $wpdb->prepare
 	$sql1 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE left_object_id = %d AND left_object_type = %s AND right_object_type = %s AND right_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
-	# If so, return the relationship ID as an integer
+	# Get the relationship ID as an integer
 	$row = $wpdb->get_row( $sql1 );
 	if ( is_object( $row ) ) {
 		$relationship_id = (int) $row->relationship_id;
 	}
 
 	if ( ! empty( $relationship_id ) ) {
+
+		# Hook before relationship deleted
+		do_action( 'pre_delete_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+		# Delete relationship
 		$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
 	}
+
 	else { // nothing deleted so far
 		
 		$sql2 = $wpdb->prepare( "SELECT relationship_id FROM $table_name WHERE right_object_id = %d AND right_object_type = %s AND left_object_type = %s AND left_object_id = %d", $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
+		# Get the relationship ID as an integer
 		$row = $wpdb->get_row( $sql2 );
 		if ( is_object( $row ) ) {
 			$relationship_id = (int) $row->relationship_id;
 		}
 
 		if ( ! empty( $relationship_id ) ) {
+
+			# Hook before relationship deleted
+			do_action( 'pre_delete_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+			# Delete relationship
 			$wpdb->delete( $table_name, ['relationship_id' => $relationship_id], ['%d'] );
 		}
 	}
