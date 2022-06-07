@@ -76,7 +76,7 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 			$item = 'array';
 		}
 
-		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Error if $right_object_type is not a non-null string of an appropriate value
@@ -93,7 +93,7 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 			$item = 'array';
 		}
 
-		return new WP_Error( 'right_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'right_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Good to go!
@@ -214,7 +214,7 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 			$item = 'array';
 		}
 
-		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Error if $right_object_type is not a non-null string of an appropriate value
@@ -231,7 +231,7 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 			$item = 'array';
 		}
 
-		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Good to go!
@@ -323,7 +323,7 @@ function kts_get_object_relationship_ids( $left_object_id, $left_object_type, $r
 			$item = 'array';
 		}
 
-		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 2 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Error if $right_object_type is not a non-null string of an appropriate value
@@ -340,7 +340,7 @@ function kts_get_object_relationship_ids( $left_object_id, $left_object_type, $r
 			$item = 'array';
 		}
 
-		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' .$item . ' given.' ) );
+		return new WP_Error( 'left_object_type', __( 'kts_add_object_relationship() expects parameter 3 to be one of ' . $object_list . ', ' . $item . ' given.' ) );
 	}
 
 	# Good to go!
