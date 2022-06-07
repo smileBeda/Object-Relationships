@@ -102,9 +102,9 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 	$relationship_id = 0;
 
 	$relationship_array = array(
-		'left_object_id'		=> $left_object_id,
+		'left_object_id'	=> $left_object_id,
 		'left_object_type'	=> $left_object_type,
-		'right_object_type'=> $right_object_type,
+		'right_object_type'	=> $right_object_type,
 		'right_object_id'	=> $right_object_id
 	);
 
