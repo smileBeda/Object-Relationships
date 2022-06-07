@@ -151,11 +151,6 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 	$added = $wpdb->insert( $table_name, $relationship_array );
 	$relationship_id = $wpdb->insert_id;
 
-	# Bust object relationship query cache
-	if ( $added ) {
-		wp_cache_set( 'last_changed', microtime(), 'relationships' );
-	}
-
 	# Hook after relationship added
 	do_action( 'added_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
@@ -282,9 +277,8 @@ function kts_delete_object_relationship( $left_object_id, $left_object_type, $ri
 		}
 	}
 
-	# Bust object relationship query cache
-	if ( ! empty( $relationship_id ) ) { // a relationship got deleted
-		wp_cache_set( 'last_changed', microtime(), 'relationships' );
+	# If a relationship got deleted
+	if ( ! empty( $relationship_id ) ) {
 
 		# Hook after relationship deleted
 		do_action( 'deleted_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
