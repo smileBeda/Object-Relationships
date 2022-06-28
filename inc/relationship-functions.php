@@ -22,8 +22,8 @@
 }
 
 
-/* ADD BI-DIRECTIONAL RELATIONSHIP BETWEEN TWO OBJECTS */
-function kts_add_object_relationship( $left_object_id, $left_object_type, $right_object_type, $right_object_id ) {
+/* CHECK IF BI-DIRECTIONAL RELATIONSHIP EXISTS BETWEEN TWO OBJECTS */
+function kts_object_relationship_exists( $left_object_id, $left_object_type, $right_object_type, $right_object_id ) {
 
 	# Error if $left_object_id is not a positive integer
 	if ( filter_var( $left_object_id, FILTER_VALIDATE_INT ) === false ) {
@@ -102,9 +102,9 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 	$relationship_id = 0;
 
 	$relationship_array = array(
-		'left_object_id'	=> $left_object_id,
+		'left_object_id'		=> $left_object_id,
 		'left_object_type'	=> $left_object_type,
-		'right_object_type'	=> $right_object_type,
+		'right_object_type'=> $right_object_type,
 		'right_object_id'	=> $right_object_id
 	);
 
@@ -142,21 +142,43 @@ function kts_add_object_relationship( $left_object_id, $left_object_type, $right
 			# Hook when pre-existing relationship found
 			do_action( 'existing_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
 
-			return $relationship_id;
-
 		}
 	}
 
-	# Relationship does not exist, so insert it now ($wpdb->insert sanitizes data)
-	$added = $wpdb->insert( $table_name, $relationship_array );
-	$relationship_id = $wpdb->insert_id;
-
-	# Hook after relationship added
-	do_action( 'added_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
-
-	# Return relationship ID of last inserted relationship
+	# Return relationship ID (which will be 0 if none exists)
 	return $relationship_id;
+}
 
+
+/* ADD BI-DIRECTIONAL RELATIONSHIP BETWEEN TWO OBJECTS */
+function kts_add_object_relationship( $left_object_id, $left_object_type, $right_object_type, $right_object_id ) {
+
+	# Check if relationship already exists: if so return relationship ID
+	$relationship_id = kts_object_relationship_exists( $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+
+	if ( absint( $relationship_id ) === 0 ) {
+
+		# Relationship does not exist, so insert it now
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'kts_object_relationships';
+
+		$relationship_array = array(
+			'left_object_id'		=> $left_object_id,
+			'left_object_type'	=> $left_object_type,
+			'right_object_type'=> $right_object_type,
+			'right_object_id'	=> $right_object_id
+		);
+
+		# $wpdb->insert sanitizes data
+		$added = $wpdb->insert( $table_name, $relationship_array );
+		$relationship_id = $wpdb->insert_id;
+
+		# Hook after relationship added
+		do_action( 'added_object_relationship', $relationship_id, $left_object_id, $left_object_type, $right_object_type, $right_object_id );
+	}
+
+	# Return relationship ID of newly-inserted relationship
+	return $relationship_id;
 }
 
 
