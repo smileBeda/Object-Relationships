@@ -14,3 +14,18 @@ There is a filter, `recognized_relationship_objects`, that makes it possible to 
 There is now an accompany meta database table, which enables use of the following helper functions: `add_relationship_meta()`, `update_relationship_meta()`, `delete_relationship_meta()`, and `get_relationship_meta()`.
 
 There are probably many ways in which this plugin can be improved. (No doubt someone would prefer it to be object-oriented!) Pull requests are welcome.
+
+### Examples
+```
+// Returns the relationship row ID of the related post 6 and page 264, if it exists. O if not.
+$exists = kts_object_relationship_exists( 6, 'post', 'page', 264 );
+// Returns relationship ID after inserting new relationship between post 6 and page 173. Will NOT insert the relationship again if it already exists (relationship has to be distinct).
+$add = kts_add_object_relationship( 6, 'post', 'page', 173 );
+error_log( print_r( $add, true ) );
+// Returns empty after deleting the relationship row of post 6 and page 173.
+$delete = kts_delete_object_relationship( 6, 'post', 'page', 173 );
+error_log( print_r( $delete, true ) );
+// Returns array of [(int) key => (int) Relationship ID] found between EITHER post 6 and any page or page 6 and any post. This probably needs some more spec to also return only those relationships where a _specific_ type === id in a relationship
+$get = kts_get_object_relationship_ids( 6, 'post', 'page' );
+error_log( print_r( $get, true ) );
+```

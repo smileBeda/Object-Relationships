@@ -1,15 +1,21 @@
-<?php if ( ! defined( 'ABSPATH' ) ) { exit; }
+<?php
+/**
+ * Holds functions for database interactions
+ */
 
-/* CREATE TABLES FOR OBJECT RELATIONSHIPS */
+/**
+ * CREATE TABLES FOR OBJECT RELATIONSHIPS.
+ */
 function kts_object_relationships_create_db() {
+
 	global $wpdb;
 	$relationships_table_name = $wpdb->prefix . 'kts_object_relationships';
 	$meta_table_name = $wpdb->prefix . 'kts_object_relationshipmeta';
 
-	# Set database version as 1.0 in absence of value stored in options table
+	// Set database version as 1.0 in absence of value stored in options table.
 	$version = (int) get_option( 'kts_object_relationships_version', '1.0' );
 
-	# Create database table
+	// Create database table.
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$relationships_sql = "CREATE TABLE IF NOT EXISTS $relationships_table_name (
